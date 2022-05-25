@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using BooksApi.Models;
+using BooksApi.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace BooksApi
 {
@@ -34,7 +36,11 @@ namespace BooksApi
             services.AddSingleton<IBookstoreDatabaseSettings>(sp =>
                sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
 
-            services.AddControllers();
+            services.AddSingleton<BookService>();
+
+            services.AddControllers()
+                .AddNewtonsoftJson(options => options.UseMemberCasing()); ;
+
             /*services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BooksApi", Version = "v1" });
@@ -47,8 +53,9 @@ namespace BooksApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
+                /*app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BooksApi v1"));
+                */            
             }
 
             app.UseHttpsRedirection();
